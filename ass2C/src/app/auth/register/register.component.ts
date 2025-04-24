@@ -1,31 +1,51 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormsModule, NgForm } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
   username: string = '';
-  name: string = '';
   password: string = '';
+  confirmPassword: string = '';
+  name: string = '';
+  error: string = '';
+  success: string = '';
 
   constructor(private auth: AuthService, private router: Router) {}
 
-  register() {
-    this.auth.register(this.username, this.name, this.password).subscribe({
+  onSubmit(form: NgForm) {
+    if (!form.valid) {
+      this.error = 'Please fill in all required fields';
+      return;
+    }
+
+    if (this.password !== this.confirmPassword) {
+      this.error = 'Passwords do not match';
+      return;
+    }
+
+    this.error = '';
+    this.auth.register(this.username, this.password, this.name).subscribe({
       next: (res) => {
-        console.log('Registration successful:', res);
-        this.router.navigate(['/login']);
+        if (res.success) {
+          this.success = 'Registration successful! Redirecting to login...';
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
+        } else {
+          this.error = res.message || 'Registration failed';
+        }
       },
       error: (error) => {
-        console.error('Registration failed:', error);
-        alert('Registration failed. Please try again.');
+        this.error = error.error?.message || 'Registration failed, please try again';
       }
     });
   }

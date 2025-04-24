@@ -1,0 +1,11 @@
+# Use the official Node.js image
+FROM node:18
+
+# Set working directory inside container
+WORKDIR /app
+
+# Copy all files from your local folder to the container
+COPY . .
+
+# Run the JS file
+CMD ["node", "Hello.js"]
