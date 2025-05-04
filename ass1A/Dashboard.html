@@ -1,95 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="dashboard.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monthly Sales Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background: #f3e8ff; /* light purple */
+      font-family: 'Poppins', sans-serif;
+      color: #2e2e2e;
+      overflow-x: hidden;
+    }
+
+    .menu-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: #a8e6cf;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 1100;
+      transition: transform 0.3s;
+    }
+
+    .menu-btn.open {
+      transform: rotate(90deg);
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: -250px;
+      background: rgba(200, 255, 200, 0.95);
+      transition: all 0.3s;
+      padding-top: 60px;
+      z-index: 1000;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #2e2e2e;
+      padding: 15px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .content {
+      margin-left: 0;
+      transition: margin-left 0.3s;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      color: #2e2e2e;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .charts-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .chart-box {
+      flex: 1;
+      max-width: 45%;
+      min-width: 300px;
+    }
+
+    .stats-container {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .stats-card {
+      flex: 0.3;
+      padding: 15px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      font-weight: 600;
+      color: #2e2e2e;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.3);
+      z-index: 900;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .charts-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      .chart-box {
+        max-width: 90%;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-  
-  <nav id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-      <h3>Admin Panel</h3>
-      <button id="sidebarCollapse" class="btn btn-warning">☰</button>
-    </div>
-    <ul class="nav flex-column">
-      <li class="nav-item"><a class="nav-link active" href="#">Dashboard</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Orders</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Products</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Settings</a></li>
-    </ul>
-  </nav>
+  <button class="menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
 
-  
-  <div id="content">
-    <div class="container-fluid">
-      <h2 class="mt-4">Admin Dashboard</h2>
+  <div class="sidebar" id="sidebar">
+    <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+    <a href="#" onclick="showSection('statistics')">Statistics</a>
+    <a href="#" onclick="showSection('users')">Users</a>
+  </div>
 
-      
-      <div class="row">
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Total Users</h5>
-              <p class="card-text">500</p>
-            </div>
-          </div>
+  <div class="content" id="content">
+    <div id="dashboard" class="section">
+      <h2 class="mb-4 text-center fw-semibold">📊 Monthly Sales Data</h2>
+      <div class="stats-container">
+        <div class="stats-card">📅 Daily Users: <br><strong>1,200</strong></div>
+        <div class="stats-card">📈 Weekly Users: <br><strong>8,500</strong></div>
+        <div class="stats-card">🌐 Monthly Users: <br><strong>34,000</strong></div>
+      </div>
+      <div class="charts-container" id="charts-container">
+        <div class="card p-3 chart-box">
+          <canvas id="pieChart"></canvas>
         </div>
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Total Orders</h5>
-              <p class="card-text">120</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Revenue</h5>
-              <p class="card-text">₹12,000</p>
-            </div>
-          </div>
+        <div class="card p-3 chart-box">
+          <canvas id="scatterPlot"></canvas>
         </div>
       </div>
-
-     
-      <h3 class="mt-4">Recent Orders</h3>
-      <table class="table table-dark table-striped">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Customer</th>
-            <th>Product</th>
-            <th>Amount</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Thakre Rushikesh</td>
-            <td>Laptop</td>
-            <td>₹900</td>
-            <td><span class="badge badge-success">Completed</span></td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Rushikesh Thakre</td>
-            <td>Phone</td>
-            <td>₹700</td>
-            <td><span class="badge badge-warning">Pending</span></td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 
-  <script src="dashboard.js"></script>
+  <script>
+    const menuBtn = document.getElementById("menuBtn");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    function toggleSidebar() {
+      const isOpen = sidebar.style.left === "0px";
+      sidebar.style.left = isOpen ? "-250px" : "0";
+      overlay.style.display = isOpen ? "none" : "block";
+      menuBtn.classList.toggle("open", !isOpen);
+    }
+
+    function showSection(sectionId) {
+      document.querySelectorAll(".section").forEach((section) => {
+        section.style.display = "none";
+      });
+      document.getElementById(sectionId).style.display = "block";
+      toggleSidebar();
+    }
+
+    const salesData = [12000, 15000, 11000, 18000, 22000, 17000, 25000, 23000, 20000, 21000, 19000, 24000];
+    const customerData = salesData.map((sale) => Math.round(sale / 1000));
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    const lavenderGreenPalette = [
+      "#b2d8b2", "#cce6cc", "#a8d5ba", "#d9f2d9", "#e6f5e6", "#b2f0e6",
+      "#c0eccc", "#cce5d4", "#b3e6b3", "#d0f0c0", "#c4e1c1", "#adebad"
+    ];
+
+    new Chart(document.getElementById("pieChart"), {
+      type: "pie",
+      data: {
+        labels: months,
+        datasets: [{
+          data: salesData,
+          backgroundColor: lavenderGreenPalette
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: { color: "#2e2e2e" }
+          },
+          tooltip: {
+            callbacks: {
+              label: function (tooltipItem) {
+                return `Customers: ${customerData[tooltipItem.dataIndex]}`;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById("scatterPlot"), {
+      type: "line",
+      data: {
+        labels: months,
+        datasets: [{
+          label: "Sales vs Customers",
+          data: salesData,
+          borderColor: "#90c695",
+          backgroundColor: "#d0f0c0",
+          fill: true,
+          pointRadius: 6,
+          pointBackgroundColor: "#b2d8b2",
+          pointBorderColor: "#6fa06f"
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { ticks: { color: "#2e2e2e" } },
+          y: {
+            ticks: { color: "#2e2e2e" },
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (tooltipItem) {
+                return `Customers: ${customerData[tooltipItem.dataIndex]}`;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
