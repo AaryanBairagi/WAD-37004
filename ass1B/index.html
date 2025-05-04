@@ -1,164 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"> 
-    <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-image: url('https://i.pinimg.com/564x/5b/95/28/5b9528c2e962478d1ce9c51cfc80b13b.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-bg: #fdf6e3; /* light yellow */
+      --accent-dark: #2f2f2f; /* dark charcoal */
+      --button-bg: #ffb703;
+      --button-hover: #fb8500;
+      --text-dark: #222;
+    }
 
-        .overlay {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            font-size: 24px;
-        }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--primary-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-dark);
+    }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
+    .container {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(47, 47, 47, 0.15);
+      width: 100%;
+      max-width: 420px;
+    }
 
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-        }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.75rem;
+      color: var(--accent-dark);
+    }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: #fffef6;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-        #clearStorage {
-            background-color: #ff4d4d;
-            margin-top: 10px;
-        }
+    input:hover,
+    input:focus {
+      transform: scale(1.03);
+      box-shadow: 0 0 8px rgba(47, 47, 47, 0.2);
+      outline: none;
+    }
 
-        #clearStorage:hover {
-            background-color: #e64545;
-        }
 
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            color: #007BFF;
-            text-decoration: none;
-        }
+    button {
+      width: 100%;
+      background: var(--button-bg);
+      color: #222;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
 
-        a:hover {
-            text-decoration: underline;
-        }
+    button:hover {
+      background: var(--button-hover);
+    }
 
-        @media (max-width: 480px) {
-            .overlay {
-                padding: 20px;
-            }
+    #clearStorage {
+      background: #d62828;
+      color: white;
+      margin-top: 10px;
+    }
 
-            h1 {
-                font-size: 20px;
-            }
+    #clearStorage:hover {
+      background: #a32020;
+    }
 
-            button {
-                padding: 10px;
-            }
-        }
-    </style>
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>User Registration</h1>
+    <form id="registrationForm">
+      <label for="name">Name</label>
+      <input type="text" id="name" required />
 
-    <div class="overlay">
-        <h1>User Registration</h1>
-        <form id="registrationForm">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+      <label for="email">Email</label>
+      <input type="email" id="email" required />
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" required />
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+      <label for="city">City</label>
+      <input type="text" id="city" required />
 
-            <label for="city">City:</label>
-            <input type="text" id="city" name="city" required>
+      <button type="submit">Register</button>
+    </form>
 
-            <button type="submit">Register</button>
-        </form>
+    <button id="clearStorage">Clear User Data</button>
+    <a href="users.html">View Registered Users</a>
+  </div>
 
-        <button id="clearStorage">Clear User Data</button>
-        <a href="users.html">View Registered Users</a>
-    </div>
-
-    <script>
-        document.getElementById('clearStorage').addEventListener('click', function() {
-            localStorage.removeItem('users');
-            alert('User data cleared!');
-        });
-
-        document.getElementById('registrationForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const city = document.getElementById('city').value;
-
-            const user = {
-                name: name,
-                email: email,
-                password: password,
-                city: city
-            };
-
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            users.push(user);
-
-            localStorage.setItem('users', JSON.stringify(users));
-
-            alert('User registered successfully!');
-
-            this.reset();
-        });
-    </script>
-    <script src="app.js"></script>
-
+  <script src="app.js"></script>
 </body>
 </html>
